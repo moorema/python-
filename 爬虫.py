@@ -7,7 +7,7 @@ dic = {
 resp = requests.get(url, headers=dic)
 
 print(resp.text)
----
+------------------------------------------------------------------------------------------------------
 # 河南采购,cookie手动反反爬(半成品手动cookie会过期)
 import requests
 

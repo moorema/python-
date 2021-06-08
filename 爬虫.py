@@ -92,4 +92,45 @@ print("over!")
 ------------------------------------------------------------------------------------------------------
 
 
+# 爬取电影天堂,主页面里的子页面中的电影信息,链接
+# 爬取网页源码
+domainName = "https://dytt89.com"
+resp = requests.get(domainName, verify=False)
+resp.encoding = 'gbk'  # 设置编码为网站原来的编码:gbk,否则汉字乱码
+codeS = resp.text
+
+# 预加载正则
+obj1 = re.compile(r'2021必看热片.*?<ul>(?P<ziyuan>.*?)</ul>', re.S)
+obj2 = re.compile(r"<li><a href='(?P<ul>.*?)' title=", re.S)
+obj3 = re.compile(r'<meta name=keywords content="(?P<movieName>.*?)下载">', re.S)
+obj4 = re.compile(r'<td style="WORD-WRAP: break-word" bgcolor="#fdfddf"><a href="(?P<link>.*?)&tr=', re.S)
+
+# 提取页面源代码
+resu = obj1.finditer(codeS)
+ulHrefList = []
+for it in resu:
+    ziyuan1 = it.group('ziyuan')
+
+    # 提取子页面地址
+    resu2 = obj2.finditer(ziyuan1)
+    for it1 in resu2:
+        # print(it1.group('ul'))
+        ulHref = domainName + it1.group('ul')  # 拼接链接地址
+        ulHrefList.append(ulHref)  # 把子页面地址添加到上面创建的空列表中
+
+# 拿到上面的子页面详细链接,对子页面进行提取信息
+# f = open('dianying.txt', mode='w')
+# textwrite = f.write(f)
+for href in ulHrefList:
+    chile_Resp = requests.get(href, verify=False)
+    chile_Resp.encoding = 'gbk'
+    # print(chile_Resp.text)
+    resu3 = obj3.search(chile_Resp.text)
+    # print(resu3.group("movieName"))
+    lianjie1 = resu3.group("movieName")
+    resu4 = obj4.search(chile_Resp.text)
+    # print(resu4.group("link"))
+    lianjie2 = resu4.group("link")
+    break
+
 

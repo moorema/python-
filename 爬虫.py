@@ -55,3 +55,30 @@ result = obj.finditer(s)
 for it in result:
     print(it.group("name"))
     print(it.group("id"))
+
+    
+    
+    
+    
+    
+   
+#  正则爬取豆瓣250解析数据放到csv文件里
+url = "https://movie.douban.com/top250"
+headers = {
+    'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.3'
+}
+resp = requests.get(url, headers=headers)
+pageContent = resp.text
+
+# 正则解析数据
+obj = re.compile(r'<div class="item">.*?<span class="title">(?P<name>.*?)</span>', re.S)
+f = open("data.csv", mode="w")
+csvwriter = csv.writer(f)
+result = obj.finditer(pageContent)
+for it in result:
+#    print(it.group("name"))
+    dic = it.groupdict()
+    csvwriter.writerow(dic.values())
+
+f.close()
+print("over!")
